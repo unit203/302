@@ -1,43 +1,64 @@
 // ==UserScript==
-// @name         E-Nigma-Bot 2.1
+// @name         E-Nigma-Bot 3.1
 // @namespace    http://tampermonkey.net/
-// @version      2.1
+// @version      3.1
 // @description  try to take over the world!
 // @author       Sergey P
-// @match        https://auto.ru/*
 // @match        https://nigma.net.ru/*
-// @match        https://www.drom.ru/*
+// @match        https://napli.ru/*
+// @match        https://kiteuniverse.ru/*
+// @match        https://motoreforma.com/*
+// @match        https://drom.ru/*
+// @match        https://auto.drom.ru/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // ==/UserScript==
-let searchAddress = "nigma.net.ru";
-// let pointAddressFirst = "auto.ru";
-// let pointAddressFirst = "www.drom.ru";
-let pointAddressFirst = "youla.ru";
-let pointAddressSecond = "www.drom.ru";
-let coinPageSarch = 2;
-
 console.log("Страница скрипта запущена");
+let searchAddress = "nigma.net.ru";
+let coinPageSarch = 4;
+
+
+
+let sites = {
+  "napli.ru":["10 популярных шрифтов Google", "Отключение редакций и ревизий", "Вывод произвольных типов записей и полей wp",
+              "Конвертация Notion в Obsidian", "FFmpeg", "VSCode плагины"],
+  "kiteuniverse.ru":["Kite Universe Россия", "Красота. Грация. Интеллект", "Фестиваль воздушных змеев"],
+  "motoreforma.com":["прошивки для CAN-AM", "тюнинг Maverik X3", "тюнинг для квадроциклов CAN-AM"],
+}
+// // записываю переменную посредством обращения к глобальному методу? объекта, передавая ему объект с ключами ,сайт-запрос в котором посредством функции предоставления рандомного значения будет выбран определенный ключ - адрес сайта/
+// let site = Object.keys(sites)[getRandom(0, Object.keys(sites).length)];
+
+// // Присваиваю переменной значение целевого сайта. Далее эта переменная используется в скрипте-функциях.
+let pointAddressFirst;
+let keywords;
+let keyword;
+
+if(location.hostname == searchAddress && document.getElementById("query").value[0] != undefined) {
+  pointAddressFirst = getCookie("site");
+} 
+
 let links = document.links;
 let nigmaInput = document.getElementById("query");
 let flagSearchClick = true;
-// console.log(nigmaInput);
-// let btnSearch = document.querySelector(".search");
 let btnSearch = null;
-// let keyword = keywords[getRandom(0, keywords.length)];
 
-let keywords = [
-  "купить авто",
-  "площадка по покупке автомобилей",
-  "автомобиль купить",
-  "авто осаго ру",
-];
+// function ckeckedCookie() {
+//   if (btnSearch != undefined) {
+//     document.cookie = `site=${site}`;
+//   } else if (location.hostname == "www.google.com") {
+//     site = getCookie("site");
+//   } else {
+//     site = location.hostname;
+//   }
+// }
+
+
 
 function getRandom(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
-let keyword = keywords[getRandom(0, keywords.length)];
+
 
 function iterationSword() {
   let str = keyword;
@@ -72,13 +93,13 @@ function getbtnSearch() {
   }
 }
 
-// ? Функция присваивающая полю значение
+// ? Функция присваивающая полю значение 
 function sendingRequestToSearch() {
   nigmaInput.value = keyword;
   console.log("Поле уже не пустое");
   console.log("Передан запрос: " + nigmaInput.value);
 }
-// ? Функция присваивающая полю значение
+// ? Функция присваивающая полю значение 
 
 
 // * Функция отложенного клика по кнопке поиска.
@@ -95,32 +116,8 @@ function deferredSearchClick() {
 // * Функция отложенного клика по кнопке поиска. КОНЕЦ
 
 
-// * Функция проверки поля на наличие в нем содержимого, и присвоение в него содержимого при отсутствии. НАЧАЛО
-function checkFieldsSearch() {
-  nigmaInput = document.getElementById("query");
-  console.log("Проверка поля запущена");
 
 
-  if (nigmaInput.value[0] == undefined) {
-    iterationSword();
-
-  } else if (nigmaInput.value == keyword) {
-    // console.log("else");
-    // console.log(nigmaInput.value);
-    // console.log(keyword);
-    keyword = nigmaInput.value;
-    console.log("ЗАполнено нужным поле");
-    deferredCheckingPointLink();
-  } else {
-    console.log("Поле уже не пустое, функция не нужна");
-    keyword = nigmaInput.value;
-    deferredCheckingPointLink();
-  }
-}
-// * Функция проверки поля на наличие в нем содержимого, и присвоение в него содержимого при отсутствии. КОНЕЦ
-
-
-// checkFieldsSearch();
 
 
 // * Функция запуска отложенного старта проверки наличия искомой ссылки на странице выдачи НАЧАЛО
@@ -146,15 +143,18 @@ function checkingPointLink() {
       console.log(link);
       link.target == '_blank' && link.removeAttribute('target');
       console.log(link);
+      // Нужно убрать атрибут от ссылки
+
+
       console.log("Нашел строку " + link);
+      // Не работает!!!
       link.click();
       // window.location.replace(link);
       break;
     } else {
-      // ! Функция которая найдет клавишу по открытию следующей страницы раздачи
+      // ! Функция которая найдет клавишу по открытию следующей страницы раздачи 
       openNewPageSearchArea()
     }
-    // link.click();
   }
 }
 // * Функция проверки наличия искомой ссылки на странице выдачи КОНЕЦ
@@ -163,35 +163,41 @@ function checkingPointLink() {
 
 
 
-// ! Функция проверяющая на какой странице мы находимся и запускающая скрипт в зависимости от страницы.НАЧАЛО
+
+// * Функция проверяющая на какой странице мы находимся и запускающая скрипт в зависимости от страницы.НАЧАЛО
 
 function checkPage() {
-// * Если установит что это страница поисковика то выполнит действия для поисковика:
+  ckeckedCookie();
+  // * Если установит что это страница поисковика то выполнит действия для поисковика:
   if (location.hostname == searchAddress) {
     // Проверяю ссылки на странице, перезаписываю их.
     links = document.links;
-  // Функция нахождения кнопки запуска поиска. Старт. Функция независимая.
-  getbtnSearch();
+    // Функция нахождения кнопки запуска поиска. Старт. Функция независимая.
+    getbtnSearch();
+    // ckeckedCookie();
   //* Отложенный запуск проверки на наличие пустого поля поиска на странице.НАЧАЛО
   setTimeout(checkFieldsSearch(), 1000);
   //* Отложенный запуск проверки на наличие пустого поля поиска на странице.КОНЕЦ
 
 
-
 // * Если установит что эта страница является "Ключевой" т.е. искомой нами страницей для выполнения на ней действий с этой страницей тогда:
   } else if (location.hostname == pointAddressFirst) {
+    // ckeckedCookie();
+// !2. Пошел на поинт сайт. Зашел запустил скрипт.сгенерил новый сайт в переменную сайтПЛОХО надо исправить. Проверяю кнопка поиска есть? нет, я на странице поисковика, нет! Тогда беру и записываю в переменную сайт, вместо сгенерированного значения адрес текущей страницы что бы иметь возможность взаимодействовать с ее адресами. 
+
+
     // Проверяю ссылки на странице, перезаписываю их.
     links = document.links;
     console.log("Мы на целевом сайте");
     // Интервальная самозапускаемая функция производящая запуск содержимого в установленных временных рамках.СТАРТ ---
     setInterval(() => {
-      //
+      // 
       // Переменная хранящая произвольное число от 0 до количества ссылок на странице
       let index = getRandom(0, links.length);
       // Произвольное условие которое при выполнении направит скрипт на главную страницу поисковика.
-      if (getRandom(0, 101) >= 50) {
+      if (getRandom(0, 70) >= 20) {
         // Изменяет адрес страницы на страницу с поисковиком.
-        location.href = `"https://${searchAddress}"`;
+    location.href = `https://${searchAddress}`;
       }
       // Если ссылок нет, направляет на ту же страницу, т.е. искомую.
       if (links.length == 0) {
@@ -204,11 +210,9 @@ function checkPage() {
     }, getRandom(3000, 5000));
     // Интервальная самозапускаемая функция производящая запуск содержимого в установленных временных рамках.КОНЕЦ ---
   } else {
-
+    pointAddressFirst = location.hostname;
   }
 }
-
-
 function openNewPageSearchArea() {
   console.log("Запущена функция поиска и нажатия следующей страницы в раздаче поисковика");
   let linkNextPage = document.getElementById("pages");
@@ -227,16 +231,84 @@ console.log("Запущен поиск номера на странице");
   let linkPagesListAll = document.querySelector(".pages");
   let linkPagesList =linkPagesListAll.querySelectorAll('b');
   for (item of linkPagesList) {
-    // console.log(item.innerText);
-    // console.log(item.outerHTML);
+
 
     if (item.innerText == coinPageSarch) {
-      console.log("Номер на странице найден" + coinPageSarch);
       flagNeedSearchPage = false;
       location.href = `https://${searchAddress}`
     }
   }
 }
 
-checkPage();
 
+// * Фунция которая даст куки - вернет.НАЧАЛО
+function getCookie(name) {
+  let matches = document.cookie.match(new RegExp(
+    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+  ));
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+// * Фунция которая даст куки - вернет.КОНЕЦ
+
+
+function getRandomRequest() {
+  // записываю переменную посредством обращения к глобальному методу? объекта, передавая ему объект с ключами ,сайт-запрос в котором посредством функции предоставления рандомного значения будет выбран определенный ключ - адрес сайта/
+  let site = Object.keys(sites)[getRandom(0, Object.keys(sites).length)];
+  // Присваиваю переменной значение целевого сайта. Далее эта переменная используется в скрипте-функциях.
+  pointAddressFirst = site;
+// Переменная записывающая в себя перечено запросов для сайта. Получает их т.к. выбиранный ранее ключ-сайт передается в объект который вернет обратно значения-перечень-массив строк с запросом
+  keywords = sites[site];
+  keyword = keywords[getRandom(0, keywords.length)];
+  console.log(getCookie("site"));
+  document.cookie = `site=${pointAddressFirst}`;
+  console.log(pointAddressFirst);
+  console.log(getCookie("site"));
+}
+
+
+function ckeckedCookie() {
+  console.log(pointAddressFirst);
+  console.log(location.hostname);
+  console.log(searchAddress);
+  if(location.hostname == searchAddress && document.getElementById("query").value[0] == undefined) {
+    console.log("Новая поисковая страница");
+    getRandomRequest();
+  } else if (location.hostname == searchAddress) {
+    console.log("Страница поисковой выдачи");
+    pointAddressFirst = getCookie("site");
+    console.log(pointAddressFirst);
+  } else {
+    console.log("Страница необходимого сайта");
+    pointAddressFirst = location.hostname;
+    console.log(pointAddressFirst);
+  }
+}
+
+
+// * Функция проверки поля на наличие в нем содержимого, и присвоение в него содержимого при отсутствии. НАЧАЛО
+function checkFieldsSearch() {
+  console.log("Проверка поля запущена");
+  if (document.getElementById("query")) {
+    nigmaInput = document.getElementById("query");
+
+    if (nigmaInput.value[0] == undefined) {
+      iterationSword();
+    } else if (nigmaInput.value == keyword) {
+      keyword = nigmaInput.value;
+      pointAddressFirst = getCookie("site");
+      deferredCheckingPointLink();
+    } else {
+      keyword = nigmaInput.value;
+      pointAddressFirst = getCookie("site");
+      deferredCheckingPointLink();
+    }
+  }
+}
+
+function startPage() {
+  ckeckedCookie();
+  checkPage()
+}
+
+startPage();
+console.log(pointAddressFirst);
