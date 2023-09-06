@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <link
+    <!-- <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
       integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
       crossorigin="anonymous"
-    />
+    /> -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="css/lesson-4-08.css" />
@@ -20,8 +20,10 @@
     <header class="header"></header>
     <main class="main">
       <h1 class="text-center mt-5">Форма регистрации</h1>
+      <p id="info" style="color:#d92134"></p>
       <div class="col-5 mx-auto">
-        <form action="php/reg_obr.php" method="POST">
+        <!-- <form action="php/reg_obr.php" method="POST"> -->
+        <form onsubmit="sendForm(this); return false;">
           <div class="input-group mb-3">
             <div class="input-group-prepend">
               <div class="input-group-text"><span class="material-icons">person</span></div>
@@ -56,7 +58,7 @@
               name="lastname"
             />
           </div>
-
+          <!-- <p id="info" style="color:#d92134"></p> -->
           <div class="input-group mb-3">
             <div class="input-group-prepend">
               <div class="input-group-text"><span class="material-icons">mail</span></div>
@@ -111,7 +113,61 @@
       </div>
     </main>
     <footer class="footer"></footer>
-    <!-- <script src="js/bundle.js"></script> -->
+
+    <script>
+			// async function sendForm(form) {
+			// 	let response = await fetch("php/reg_obr.php", {
+			// 		method: "POST",
+			// 		body: new FormData(form)
+			// 	});
+      //   console.log(await response.text());
+			// 	let result = await response.text();
+      //   console.log(result);
+
+
+
+
+			// 	if (result == "ok") {
+			// 		alert("Успех!");
+			// 	} else {
+			// 		info.innerText = "Такой пользователь существует";
+			// 	}
+			// }
+
+      async function sendForm(form) {
+        // alert("1");
+				let response = await fetch("php/reg_obr.php", {
+					method: "POST",
+					body: new FormData(form)
+				});
+
+				let result = await response.text();
+        console.log(typeof result);
+        console.log(result);
+        let resultString = String(result);
+
+        console.log(resultString);
+        console.log(typeof resultString);
+        
+        let answer = 'true';
+        console.log(answer);
+        console.log(typeof answer);
+
+				if (resultString == answer) {
+					alert("Успех!");
+				} else {
+          console.log('сработал ЕЛС');
+					info.innerText = "Такой пользователь существует";
+				}
+			}
+    </script>
+
+
+
+
+
+
+
     <script
       src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
       integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
